@@ -19,7 +19,7 @@
 
 **[🚀 Try Image Utils Online](https://www.image-utils.site/) · [Portfolio](https://h-arshal.github.io/Portfolio/) · [GitHub](https://github.com/h-arshal) · [LinkedIn](https://www.linkedin.com/in/harshal-moon-064956174/) · [LeetCode](https://leetcode.com/u/harshal_jaipal/) · [Instagram](https://www.instagram.com/harshal.moon)**
 
-[Quick start](#quick-start) · [13 Everyday Utilities](#13-everyday-utilities) · [How It Works](#how-it-works) · [Privacy & Security](#privacy--security-guarantee) · [Supported Formats](#supported-formats) · [FAQ](#faq) · [License](#license)
+[Quick start](#quick-start) · [14 Everyday Utilities](#14-everyday-utilities) · [How It Works](#how-it-works) · [Privacy & Security](#privacy--security-guarantee) · [Supported Formats](#supported-formats) · [FAQ](#faq) · [License](#license)
 
 ```bash
 git clone https://github.com/h-arshal/Image-Utils.git && cd Image-Utils && npm install && npm run dev
@@ -49,7 +49,7 @@ Most online converters and image editors force you to upload your sensitive phot
 
 ---
 
-## 🛠️ 13 Everyday Utilities
+## 🛠️ 14 Everyday Utilities
 
 A complete, purpose-built creative suite tailored for designers, engineers, students, and content creators:
 
@@ -57,6 +57,7 @@ A complete, purpose-built creative suite tailored for designers, engineers, stud
 | :--- | :--- | :--- | :--- |
 | **Resize** | `/resize` | Pixel-perfect width/height scaling with aspect-ratio lock, custom dimensions, and dimension presets. | `PNG`, `JPEG`, `WebP` |
 | **Compress** | `/compress` | Smart lossy/lossless compression via target file size (e.g., 200 KB) or interactive quality slider. | `JPEG`, `WebP` |
+| **Remove Background** | `/removebg` | Automatic transparent cutouts via border flood-fill, color distance mapping, and anti-halo unmixing. | `PNG` (Transparent) |
 | **Convert Format** | `/convert` | High-fidelity cross-format conversion without server roundtrips. | `PNG`, `JPEG`, `WebP`, `BMP`, `AVIF`, `TIFF`, `ICO` |
 | **Crop** | `/crop` | Freeform and preset aspect-ratio rectangular cropping (`1:1`, `16:9`, `4:3`, `3:2`). | `PNG`, `JPEG`, `WebP` |
 | **Favicon Generator** | `/favicon` | Generates cross-platform multi-resolution favicon packages with standard Web Manifest configurations. | `.ICO`, `.PNG`, `ZIP` archive (7 sizes) |

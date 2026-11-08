@@ -1,3 +1,20 @@
+import { processBackgroundRemoval, rgbToHex, hexToRgb } from './bgRemovalCore';
+
+let activeWorker = null;
+let workerMsgId = 0;
+
+function getBgWorker() {
+  if (typeof Worker === 'undefined') return null;
+  if (!activeWorker) {
+    try {
+      activeWorker = new Worker(new URL('./bgRemovalWorker.js', import.meta.url), { type: 'module' });
+    } catch {
+      activeWorker = null;
+    }
+  }
+  return activeWorker;
+}
+
 /**
  * Format bytes into human-readable string (e.g. 1.2 MB, 450 KB)
  */
@@ -1213,3 +1230,74 @@ export async function generateFavicon(img, {
     isIco: false
   };
 }
+
+/**
+ * 14. REMOVE BACKGROUND
+ * Hybrid 4-step pipeline: border median estimation -> color distance map -> border flood-fill -> soft alpha unmixing
+ */
+export async function removeBackgroundImage(img, options = {}) {
+  const width = Math.max(1, img.naturalWidth || img.width);
+  const height = Math.max(1, img.naturalHeight || img.height);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(img, 0, 0, width, height);
+
+  const imgData = ctx.getImageData(0, 0, width, height);
+  const worker = getBgWorker();
+
+  let processedImgData = null;
+  let estimatedBg = null;
+
+  if (worker) {
+    const id = ++workerMsgId;
+    processedImgData = await new Promise((resolve) => {
+      const handler = (e) => {
+        if (e.data && e.data.id === id) {
+          worker.removeEventListener('message', handler);
+          if (e.data.success && e.data.buffer) {
+            estimatedBg = e.data.estimatedBg;
+            const clamped = new Uint8ClampedArray(e.data.buffer);
+            resolve(new ImageData(clamped, width, height));
+          } else {
+            // Fallback to local synchronous execution
+            const res = processBackgroundRemoval(imgData, options);
+            estimatedBg = res.estimatedBg;
+            resolve(res.imgData);
+          }
+        }
+      };
+      worker.addEventListener('message', handler);
+      // Transfer the buffer for zero-copy high speed
+      worker.postMessage(
+        { id, width, height, buffer: imgData.data.buffer, options },
+        [imgData.data.buffer]
+      );
+    });
+  } else {
+    const res = processBackgroundRemoval(imgData, options);
+    processedImgData = res.imgData;
+    estimatedBg = res.estimatedBg;
+  }
+
+  ctx.putImageData(processedImgData, 0, 0);
+
+  return new Promise((resolve) => {
+    canvas.toBlob((blob) => {
+      resolve({
+        blob,
+        url: URL.createObjectURL(blob),
+        width,
+        height,
+        size: blob ? blob.size : 0,
+        estimatedBg,
+        estimatedBgHex: estimatedBg ? rgbToHex(estimatedBg) : null
+      });
+    }, 'image/png');
+  });
+}
+
+export { rgbToHex, hexToRgb };
+

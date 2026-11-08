@@ -56,6 +56,10 @@ const ROUTE_SEO = {
     title: 'Convert Image Format | Image Utility',
     desc: 'Convert seamlessly between PNG, JPEG, WebP, BMP, AVIF, TIFF, and ICO formats with custom quality and background fill.',
   },
+  removebg: {
+    title: 'Remove Background Online (Transparent PNG) | Image Utility',
+    desc: 'Instant transparent background cutout with soft anti-halo edges. 100% private in-browser background remover with zero uploads.',
+  },
   favicon: {
     title: 'Favicon Generator (.ICO & App Icons) | Image Utility',
     desc: 'Generate multi-resolution .ico favicons, 180x180 Apple Touch icons, Android PWA icons, and copy HTML embed snippet locally.',

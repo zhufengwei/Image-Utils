@@ -13,7 +13,8 @@ import {
   Wrench,
   Sliders,
   Type,
-  Globe
+  Globe,
+  Eraser
 } from 'lucide-react';
 
 export const TOOLS = [
@@ -28,6 +29,12 @@ export const TOOLS = [
     name: 'Compress',
     desc: 'Reduce file size using target KB or quality slider.',
     icon: FileDown
+  },
+  {
+    id: 'removebg',
+    name: 'Remove Background',
+    desc: 'Instant transparent background cutout with soft anti-halo edges.',
+    icon: Eraser
   },
   {
     id: 'convert',

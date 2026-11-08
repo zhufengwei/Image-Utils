@@ -18,7 +18,8 @@ import {
   Info,
   Columns,
   UploadCloud,
-  Globe
+  Globe,
+  Eraser
 } from 'lucide-react';
 import {
   formatBytes,
@@ -37,7 +38,8 @@ import {
   stripMetadata,
   watermarkImage,
   adjustImage,
-  generateFavicon
+  generateFavicon,
+  removeBackgroundImage
 } from '../utils/canvasEngine';
 import ResizeControls from './tools/ResizeControls';
 import CompressControls from './tools/CompressControls';
@@ -54,12 +56,14 @@ import InteractiveCircleCrop from './InteractiveCircleCrop';
 import InteractiveRectCrop from './InteractiveRectCrop';
 import CornerRadiusControls from './tools/CornerRadiusControls';
 import FaviconControls from './tools/FaviconControls';
+import RemoveBgControls from './tools/RemoveBgControls';
 import ToolGuideSection from './ToolGuideSection';
 
 const WORKSPACE_TOOLS = [
   { id: 'resize', name: 'Resize', desc: 'Change image dimensions', icon: Maximize2 },
   { id: 'compress', name: 'Compress', desc: 'Reduce file size', icon: FileDown },
   { id: 'convert', name: 'Convert', desc: 'Convert seamlessly between PNG, JPEG, WebP, BMP, AVIF, TIFF, and ICO', icon: Repeat },
+  { id: 'removebg', name: 'Remove Background', desc: 'Auto transparent cutout', icon: Eraser },
   { id: 'crop', name: 'Crop', desc: 'Trim to your perfect frame', icon: Crop },
   { id: 'circle', name: 'Circle Crop', desc: 'Create perfect circle images', icon: Circle },
   { id: 'radius', name: 'Corner Radius', desc: 'Round corners with transparent PNG', icon: Square },
@@ -303,6 +307,16 @@ export default function Workspace({
             res = await convertFormat(imgElement, targetFormat, quality, bgColor);
             break;
           }
+          case 'removebg': {
+            res = await removeBackgroundImage(imgElement, {
+              tolerance: toolParams.tolerance ?? 40,
+              feather: toolParams.feather ?? 0.5,
+              mode: toolParams.mode || 'contiguous',
+              bg: toolParams.bg || null,
+              colorUnmix: toolParams.colorUnmix ?? true
+            });
+            break;
+          }
           case 'favicon': {
             res = await generateFavicon(imgElement, {
               preset: toolParams.preset || 'package',
@@ -420,7 +434,7 @@ export default function Workspace({
       downloadBlob(processedResult.blob, filename);
     } else {
       let ext = 'jpg';
-      if (activeTool === 'circle' || activeTool === 'radius' || activeTool === 'border' || activeTool === 'watermark') {
+      if (activeTool === 'circle' || activeTool === 'radius' || activeTool === 'border' || activeTool === 'watermark' || activeTool === 'removebg') {
         ext = 'png';
       } else if (activeTool === 'convert') {
         const fmt = toolParams.targetFormat || 'image/png';
@@ -442,7 +456,9 @@ export default function Workspace({
         ext = 'webp';
       }
 
-      filename = activeTool === 'metadata'
+      filename = activeTool === 'removebg'
+        ? `${baseName}-transparent.png`
+        : activeTool === 'metadata'
         ? `${baseName}-cleaned.${ext}`
         : `${baseName}-${activeTool}.${ext}`;
       downloadBlob(processedResult.blob, filename);
@@ -756,6 +772,13 @@ export default function Workspace({
               />
             )}
 
+            {activeTool === 'removebg' && (
+              <RemoveBgControls
+                estimatedBgHex={processedResult?.estimatedBgHex}
+                onChange={setToolParams}
+              />
+            )}
+
             {activeTool === 'favicon' && (
               <FaviconControls
                 previewUrl={processedResult?.url || imageData.dataUrl}
@@ -853,6 +876,8 @@ export default function Workspace({
                 ? (processedResult?.filename ? `Download ${processedResult.filename}` : 'Download Favicon')
                 : activeTool === 'metadata'
                 ? 'Download Clean Image'
+                : activeTool === 'removebg'
+                ? 'Download Transparent PNG'
                 : 'Download Image'}
             </span>
           </button>

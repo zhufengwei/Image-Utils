@@ -1,7 +1,7 @@
 # Image Utility - Complete System & Architectural Documentation
 
 ## Executive Overview
-Image Utility is a comprehensive, client-side web application providing 13 essential image manipulation and conversion tools. The application runs entirely within modern web browsers using HTML5 Canvas, the JavaScript Canvas 2D API, WebAssembly decoders, and jsPDF. Zero image data is ever uploaded, cached, or logged on remote servers.
+Image Utility is a comprehensive, client-side web application providing 14 essential image manipulation and conversion tools. The application runs entirely within modern web browsers using HTML5 Canvas, the JavaScript Canvas 2D API, WebAssembly decoders, and jsPDF. Zero image data is ever uploaded, cached, or logged on remote servers.
 
 - Canonical URL: https://www.image-utils.site/
 - Production Source: https://github.com/H-arshal/Image-Utils
@@ -22,7 +22,15 @@ Image Utility is a comprehensive, client-side web application providing 13 essen
 - Mode A: Target File Size (KB). Dynamically performs binary search quantization over encoding quality parameters to achieve exact file size thresholds (e.g. 50KB, 100KB, 200KB, 500KB, 1MB).
 - Mode B: Manual Quality Slider (5% to 100%). Fine-grained lossy compression for JPEG and WebP.
 
-### 3. Convert Format (/convert)
+### 3. Remove Background (/removebg)
+- 4-step hybrid pipeline executed in Web Workers:
+  - Step 1: Automatic median border-sampling background color detection.
+  - Step 2: Euclidean RGB distance mapping.
+  - Step 3: Contiguous border flood fill (protects internal matching foreground colors like white clothing) or global color mask.
+  - Step 4: Soft alpha feathering with mathematical color unmixing (anti-halo edge correction).
+- Outputs 32-bit transparent PNG files locally with zero network roundtrips.
+
+### 4. Convert Format (/convert)
 - Lossless formats: PNG (supports full 8-bit alpha transparency channel).
 - Photographic lossy formats: JPEG (with customizable background color fill for transparent images).
 - Modern web formats: WebP (25-34% smaller than equivalent JPEG), AVIF (where supported).

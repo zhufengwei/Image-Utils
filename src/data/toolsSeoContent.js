@@ -362,6 +362,55 @@ export const TOOLS_SEO_DATA = {
     related: ['compress', 'resize', 'favicon', 'pdf']
   },
 
+  removebg: {
+    id: 'removebg',
+    name: 'Remove Background',
+    title: 'Remove Background Online (Transparent PNG) | Image Utils',
+    h1: 'Free Online Background Remover (100% Private & In-Browser)',
+    desc: 'Remove image backgrounds automatically to create transparent PNG cutouts. Features smart border flood-fill, adjustable tolerance, and anti-halo color unmixing.',
+    keywords: 'remove background, remove bg online, transparent background maker, background eraser free, remove white background, make image transparent, cutout photo online',
+    steps: [
+      {
+        name: 'Upload Photo, Logo, or Signature',
+        text: 'Select or drag any image into the workspace. Supported formats include PNG, JPEG, WebP, AVIF, and BMP.'
+      },
+      {
+        name: 'Fine-Tune Tolerance & Softness',
+        text: 'The engine automatically detects the background color. Use the tolerance slider to expand or tighten the cutout, and adjust edge softness to smooth borders.'
+      },
+      {
+        name: 'Download Transparent PNG',
+        text: 'Preview your clean cutout against the checkerboard canvas and click Download Transparent PNG with zero server uploads.'
+      }
+    ],
+    features: [
+      'One-click auto background detection via border median sampling.',
+      'Contiguous border flood-fill protects matching foreground colors (e.g. white shirts).',
+      'Anti-halo color unmixing eliminates color bleed and fringing on transparent edges.',
+      'Global mode removes enclosed gaps (like donut holes, mug handles, and letter cutouts).',
+      '100% private in-browser Web Worker execution: zero photos or bytes sent to any server.'
+    ],
+    faqs: [
+      {
+        q: 'How does in-browser background removal protect my privacy?',
+        a: 'Unlike server-based background removers, our algorithm executes 100% locally on your computer or phone using Web Workers and typed pixel arrays. Your images never leave your device memory.'
+      },
+      {
+        q: 'Why didn\'t my white clothes disappear on a white background?',
+        a: 'Our default Contiguous mode uses boundary flood-filling. Because your clothing is separated from the image borders by subject contours, it is completely protected from removal.'
+      },
+      {
+        q: 'How do I remove backgrounds with holes like mug handles or logos?',
+        a: 'Switch the Removal Mode from "Contiguous" to "Global (All Gaps)". This applies the color removal across all internal enclosed areas.'
+      },
+      {
+        q: 'What is Anti-Halo Unmixing?',
+        a: 'Anti-halo unmixing mathematically calculates and subtracts the background color that bled into antialiased edge pixels, ensuring your cutout has clean edges without white or green halos.'
+      }
+    ],
+    related: ['convert', 'crop', 'circle', 'compress']
+  },
+
   favicon: {
     id: 'favicon',
     name: 'Favicon Generator',

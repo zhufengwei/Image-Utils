@@ -11,6 +11,7 @@
 
 - [Resize](https://www.image-utils.site/resize): Resize width and height with aspect ratio lock or custom dimensions.
 - [Compress](https://www.image-utils.site/compress): Reduce image file size by target KB or perceptual quality slider.
+- [Remove Background](https://www.image-utils.site/removebg): Create transparent PNG cutouts with boundary flood-fill and anti-halo unmixing.
 - [Convert](https://www.image-utils.site/convert): Convert between PNG, JPEG, WebP, AVIF, BMP, TIFF, and ICO formats.
 - [Crop](https://www.image-utils.site/crop): Crop rectangular regions with freeform handles or 1:1, 16:9, 4:3 presets.
 - [Circle Crop](https://www.image-utils.site/circle): Create circular profile pictures and avatars with transparent PNG output.
