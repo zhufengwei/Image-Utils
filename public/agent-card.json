@@ -1,7 +1,7 @@
 {
   "$schema": "https://agenticresourcediscovery.org/schema/v1/agent-card.json",
   "name": "Image Utility",
-  "description": "Free, 100% private client-side in-browser image editing tools with zero server uploads.",
+  "description": "Free in-browser image editing tools. Image processing stays on-device; optional GA4 usage analytics loads only after consent.",
   "url": "https://www.image-utils.site",
   "version": "1.0.0",
   "capabilities": {

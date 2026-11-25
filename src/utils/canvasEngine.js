@@ -1,4 +1,5 @@
 import { processBackgroundRemoval, rgbToHex, hexToRgb } from './bgRemovalCore';
+import { getImageLimitError } from './imageLimits';
 
 let activeWorker = null;
 let workerMsgId = 0;
@@ -60,9 +61,13 @@ export function loadImage(src) {
  * 1. RESIZE IMAGE
  */
 export async function resizeImage(img, targetWidth, targetHeight, mimeType = 'image/jpeg', quality = 0.92) {
+  const width = Math.max(1, Math.round(targetWidth));
+  const height = Math.max(1, Math.round(targetHeight));
+  const limitError = getImageLimitError(width, height, 0);
+  if (limitError) throw new Error(limitError);
   const canvas = document.createElement('canvas');
-  canvas.width = Math.max(1, Math.round(targetWidth));
-  canvas.height = Math.max(1, Math.round(targetHeight));
+  canvas.width = width;
+  canvas.height = height;
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
@@ -780,14 +785,19 @@ export async function stripMetadata(img, mimeType = 'image/jpeg', quality = 0.95
   }
   ctx.drawImage(img, 0, 0);
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     canvas.toBlob((blob) => {
+      if (!blob) {
+        reject(new Error(`The browser could not export this image as ${mimeType}. Choose PNG, JPEG, or WebP.`));
+        return;
+      }
       resolve({
         blob,
         url: URL.createObjectURL(blob),
         width,
         height,
-        size: blob ? blob.size : 0,
+        size: blob.size,
+        format: blob.type,
         sanitized: true
       });
     }, mimeType, quality);
@@ -795,88 +805,138 @@ export async function stripMetadata(img, mimeType = 'image/jpeg', quality = 0.95
 }
 
 /**
- * Inspect file headers for basic EXIF safely
+ * Read EXIF markers from supported image containers without loading the full
+ * image file into another large ArrayBuffer.
  */
-export async function inspectFileMetadata(file) {
-  return new Promise((resolve) => {
-    if (!file) {
-      resolve({
-        hasExif: false,
-        hasGps: false,
-        cameraModel: null,
-        fileType: 'image/jpeg',
-        fileSize: 0,
-        isSample: true
-      });
-      return;
+function readTiffExif(bytes, tiffStart = 0) {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const result = { hasExif: true, hasGps: false, cameraModel: null, dateTime: null };
+  if (tiffStart + 8 > view.byteLength) return result;
+
+  const byteOrder = view.getUint16(tiffStart, false);
+  if (byteOrder !== 0x4949 && byteOrder !== 0x4d4d) return result;
+  const littleEndian = byteOrder === 0x4949;
+  const get16 = (offset) => offset + 2 <= view.byteLength ? view.getUint16(offset, littleEndian) : null;
+  const get32 = (offset) => offset + 4 <= view.byteLength ? view.getUint32(offset, littleEndian) : null;
+  if (get16(tiffStart + 2) !== 42) return result;
+
+  const ifdOffset = get32(tiffStart + 4);
+  const ifdStart = ifdOffset == null ? null : tiffStart + ifdOffset;
+  const entryCount = ifdStart == null ? null : get16(ifdStart);
+  if (entryCount == null || entryCount > 4096 || ifdStart + 2 + entryCount * 12 > view.byteLength) return result;
+
+  for (let i = 0; i < entryCount; i++) {
+    const entry = ifdStart + 2 + i * 12;
+    const tag = get16(entry);
+    const type = get16(entry + 2);
+    const count = get32(entry + 4);
+    if (tag === 0x8825) result.hasGps = true;
+
+    if ((tag === 0x0110 || tag === 0x0132) && type === 2 && count > 0 && count <= 1024) {
+      const valueStart = count <= 4 ? entry + 8 : tiffStart + (get32(entry + 8) ?? view.byteLength);
+      if (valueStart + count <= view.byteLength) {
+        const value = new TextDecoder('latin1').decode(new Uint8Array(bytes.buffer, bytes.byteOffset + valueStart, count)).replace(/\0+$/, '').trim();
+        if (tag === 0x0110) result.cameraModel = value || null;
+        if (tag === 0x0132) result.dateTime = value || null;
+      }
     }
+  }
+  return result;
+}
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const buffer = e.target.result;
-        const view = new DataView(buffer);
-        const metadata = {
-          hasExif: false,
-          cameraModel: null,
-          dateTime: null,
-          hasGps: false,
-          fileType: file.type || 'image/jpeg',
-          fileSize: file.size,
-          fileName: file.name
-        };
+async function readBlobBytes(file, start, length) {
+  return new Uint8Array(await file.slice(start, start + length).arrayBuffer());
+}
 
-        // Check JPEG SOI marker (0xFFD8)
-        if (view.byteLength > 4 && view.getUint16(0, false) === 0xffd8) {
-          let offset = 2;
-          while (offset + 4 <= view.byteLength) {
-            if (view.getUint8(offset) !== 0xff) break;
-            const marker = view.getUint8(offset + 1);
+function emptyFileMetadata(file, supported = true) {
+  return {
+    hasExif: false,
+    hasGps: false,
+    cameraModel: null,
+    dateTime: null,
+    inspectionSupported: supported,
+    fileType: file?.type || 'unknown',
+    fileSize: file?.size || 0,
+    fileName: file?.name || undefined
+  };
+}
 
-            if (marker === 0xda || marker === 0xd9) break;
+export async function inspectFileMetadata(file) {
+  if (!file) return { ...emptyFileMetadata(null), isSample: true };
 
-            if (marker === 0xe1) {
-              metadata.hasExif = true;
-              const strSlice = new TextDecoder('latin1').decode(
-                new Uint8Array(buffer, offset, Math.min(4096, view.byteLength - offset))
-              );
-              if (strSlice.includes('GPS')) metadata.hasGps = true;
+  const supported = ['image/jpeg', 'image/png', 'image/webp'].includes(file.type);
+  const metadata = emptyFileMetadata(file, supported);
+  if (!supported || file.size < 8) return metadata;
 
-              const modelMatch = strSlice.match(/(?:Model|Make)[\x00\s]*([a-zA-Z0-9_\-\s]{3,28})/);
-              if (modelMatch && modelMatch[1]) {
-                metadata.cameraModel = modelMatch[1].trim();
-              }
-              break;
-            }
+  try {
+    const header = await readBlobBytes(file, 0, 12);
+    const signature = new TextDecoder('latin1').decode(header);
 
-            const segLength = view.getUint16(offset + 2, false);
-            if (segLength < 2) break; // Corrupt length field protection
-            offset += 2 + segLength;
-          }
-        } else if (file.type === 'image/png') {
-          // PNG metadata chunks inspection
-          const textChunk = new TextDecoder('latin1').decode(
-            new Uint8Array(buffer, 0, Math.min(4096, buffer.byteLength))
-          );
-          if (textChunk.includes('eXIf') || textChunk.includes('tEXt') || textChunk.includes('iTXt')) {
-            metadata.hasExif = true;
+    if (header[0] === 0xff && header[1] === 0xd8) {
+      let offset = 2;
+      while (offset + 4 <= file.size) {
+        const markerHeader = await readBlobBytes(file, offset, 4);
+        if (markerHeader[0] !== 0xff) break;
+        let markerIndex = 1;
+        while (markerHeader[markerIndex] === 0xff) markerIndex++;
+        const marker = markerHeader[markerIndex];
+        if (marker === 0xda || marker === 0xd9) break;
+        const lengthIndex = markerIndex + 1;
+        if (lengthIndex + 1 >= markerHeader.length) break;
+        const segmentLength = (markerHeader[lengthIndex] << 8) | markerHeader[lengthIndex + 1];
+        if (segmentLength < 2 || offset + markerIndex + 1 + segmentLength > file.size) break;
+        const segmentStart = offset + markerIndex + 3;
+        if (marker === 0xe1 && segmentLength >= 8) {
+          const segment = await readBlobBytes(file, segmentStart, segmentLength - 2);
+          if (new TextDecoder('latin1').decode(segment.subarray(0, 6)) === 'Exif\0\0') {
+            const exif = readTiffExif(segment, 6);
+            Object.assign(metadata, exif);
           }
         }
-
-        resolve(metadata);
-      } catch (err) {
-        console.warn('Metadata parser handled invalid header safely:', err);
-        resolve({
-          hasExif: false,
-          hasGps: false,
-          fileType: file.type || 'image/jpeg',
-          fileSize: file.size
-        });
+        offset += markerIndex + 1 + segmentLength;
       }
-    };
-    reader.onerror = () => resolve({ hasExif: false, hasGps: false, fileType: file.type || 'image/jpeg', fileSize: file.size });
-    reader.readAsArrayBuffer(file.slice(0, 65536));
-  });
+      return metadata;
+    }
+
+    if (header[0] === 0x89 && signature.slice(1, 4) === 'PNG' && header[4] === 13 && header[5] === 10 && header[6] === 26 && header[7] === 10) {
+      let offset = 8;
+      while (offset + 12 <= file.size) {
+        const chunkHeader = await readBlobBytes(file, offset, 8);
+        const chunkLength = new DataView(chunkHeader.buffer).getUint32(0, false);
+        const chunkType = new TextDecoder('latin1').decode(chunkHeader.subarray(4, 8));
+        const dataStart = offset + 8;
+        if (chunkLength > file.size - dataStart - 4) break;
+        if (chunkType === 'eXIf') {
+          const exifBytes = await readBlobBytes(file, dataStart, chunkLength);
+          Object.assign(metadata, readTiffExif(exifBytes));
+        }
+        if (chunkType === 'IEND') break;
+        offset = dataStart + chunkLength + 4;
+      }
+      return metadata;
+    }
+
+    if (signature.startsWith('RIFF') && signature.slice(8, 12) === 'WEBP') {
+      let offset = 12;
+      while (offset + 8 <= file.size) {
+        const chunkHeader = await readBlobBytes(file, offset, 8);
+        const chunkType = new TextDecoder('latin1').decode(chunkHeader.subarray(0, 4));
+        const chunkLength = new DataView(chunkHeader.buffer).getUint32(4, true);
+        const dataStart = offset + 8;
+        if (chunkLength > file.size - dataStart) break;
+        if (chunkType === 'EXIF') {
+          const chunk = await readBlobBytes(file, dataStart, chunkLength);
+          const hasExifPrefix = new TextDecoder('latin1').decode(chunk.subarray(0, 6)) === 'Exif\0\0';
+          Object.assign(metadata, readTiffExif(chunk, hasExifPrefix ? 6 : 0));
+        }
+        offset = dataStart + chunkLength + (chunkLength % 2);
+      }
+    }
+  } catch (error) {
+    console.warn('Metadata inspection could not complete:', error);
+    metadata.inspectionSupported = false;
+  }
+  return metadata;
 }
 
 /**

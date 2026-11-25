@@ -58,6 +58,7 @@ import CornerRadiusControls from './tools/CornerRadiusControls';
 import FaviconControls from './tools/FaviconControls';
 import RemoveBgControls from './tools/RemoveBgControls';
 import ToolGuideSection from './ToolGuideSection';
+import { getImageLimitError, MAX_IMAGE_FILE_SIZE } from '../utils/imageLimits';
 
 const WORKSPACE_TOOLS = [
   { id: 'resize', name: 'Resize', desc: 'Change image dimensions', icon: Maximize2 },
@@ -134,9 +135,6 @@ export default function Workspace({
   }, [activeTool]);
 
   const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
-  const MAX_FILE_SIZE = 50 * 1024 * 1024;
-  const MAX_PIXEL_DIMENSION = 12000;
-
   const handleIncomingFile = (file) => {
     if (!file) return;
 
@@ -146,7 +144,7 @@ export default function Workspace({
       return;
     }
 
-    if (file.size > MAX_FILE_SIZE) {
+    if (file.size > MAX_IMAGE_FILE_SIZE) {
       if (onShowToast) onShowToast('File exceeds 50MB maximum size limit.');
       else alert('File is too large.');
       return;
@@ -162,8 +160,9 @@ export default function Workspace({
         if (onShowToast) onShowToast('Corrupted or invalid image data.');
       };
       img.onload = () => {
-        if (img.naturalWidth > MAX_PIXEL_DIMENSION || img.naturalHeight > MAX_PIXEL_DIMENSION) {
-          if (onShowToast) onShowToast(`Dimensions exceed safe limit (${MAX_PIXEL_DIMENSION}px).`);
+        const limitError = getImageLimitError(img.naturalWidth, img.naturalHeight, file.size);
+        if (limitError) {
+          if (onShowToast) onShowToast(limitError);
           return;
         }
         if (onFileLoaded) {
@@ -406,6 +405,7 @@ export default function Workspace({
         }
       } catch (err) {
         console.error('Processing error:', err);
+        if (onShowToast) onShowToast(err.message || 'Image processing failed. Please try a smaller image or different settings.');
       } finally {
         if (!cancelled) setProcessing(false);
       }
@@ -446,10 +446,11 @@ export default function Workspace({
         else if (fmt === 'image/avif') ext = 'avif';
         else ext = 'jpg';
       } else if (activeTool === 'metadata') {
-        const fmt = toolParams.format || imageData.type || 'image/jpeg';
+        const fmt = processedResult.blob?.type || toolParams.format || imageData.type || 'image/jpeg';
         if (fmt.includes('png')) ext = 'png';
         else if (fmt.includes('webp')) ext = 'webp';
-        else ext = 'jpg';
+        else if (fmt.includes('jpeg')) ext = 'jpg';
+        else ext = 'png';
       } else if (imageData.type?.includes('png')) {
         ext = 'png';
       } else if (imageData.type?.includes('webp')) {

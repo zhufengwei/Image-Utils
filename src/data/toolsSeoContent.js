@@ -568,10 +568,10 @@ export const TOOLS_SEO_DATA = {
     keywords: 'image utils privacy policy, zero upload editor privacy, private photo processing',
     steps: [
       { name: 'Zero Server Uploads', text: 'All operations execute locally in your browser memory.' },
-      { name: 'No Tracking Cookies', text: 'We do not sell data, profile users, or retain photos.' },
+      { name: 'Optional Analytics After Consent', text: 'Google Analytics loads only after a visitor opts in; image files are never uploaded.' },
       { name: 'Open Source Transparency', text: 'Full MIT licensed codebase publicly inspectable on GitHub.' }
     ],
-    features: ['100% local RAM execution', 'No cookies or trackers', 'Zero data retention', 'MIT License'],
+    features: ['Local image processing', 'Analytics only after consent', 'No image storage', 'MIT License'],
     faqs: [
       {
         q: 'Are any photos sent to your servers?',

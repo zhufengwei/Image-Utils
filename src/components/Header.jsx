@@ -53,7 +53,7 @@ export default function Header({ onReset, onOpenAbout }) {
 
         {/* GitHub Link */}
         <a
-          href="https://github.com/H-arshal/Image-Utils"
+          href="https://github.com/zhufengwei/Image-Utils"
           target="_blank"
           rel="noopener noreferrer"
           className="header-nav-link"

@@ -91,14 +91,10 @@ export default function PrivacyPolicy({ onManageAnalytics }) {
         <section className="legal-section">
           <h2>6. Contact Information</h2>
           <p>
-            If you have questions about this Privacy Policy or our client-side architecture, contact the developer via{' '}
-            <a href="https://h-arshal.github.io/Portfolio/" target="_blank" rel="noopener noreferrer">
-              Harshal Moon's Portfolio
-            </a>{' '}
-            or view the open-source code on{' '}
-            <a href="https://github.com/H-arshal/Image-Utils" target="_blank" rel="noopener noreferrer">
-              GitHub
-            </a>.
+            For questions about this site or its privacy practices, contact the site maintainer through{' '}
+            <a href="https://github.com/zhufengwei/Image-Utils/issues" target="_blank" rel="noopener noreferrer">
+              the project's GitHub support page
+            </a>. Please do not include private images or personal data in a public issue.
           </p>
         </section>
       </div>

@@ -1,6 +1,6 @@
 # Robots.txt for Image Utility
-# https://tubular-cascaron-6e081d.netlify.app/
-# Source: https://github.com/H-arshal/Image-Utils
+# https://www.image-utils.site/
+# Maintained source: https://github.com/zhufengwei/Image-Utils
 
 
 User-agent: *
@@ -22,5 +22,5 @@ Allow: /
 
 
 # Canonical XML Sitemap
-Sitemap: https://tubular-cascaron-6e081d.netlify.app/sitemap.xml
+Sitemap: https://www.image-utils.site/sitemap.xml
 

@@ -3,9 +3,9 @@
 > Free, 100% private in-browser image tools. Resize, compress, crop, circle crop, round corners, add borders, convert formats (PNG, JPEG, WebP, AVIF, TIFF, ICO), generate favicons, add watermarks, create PDFs, and remove EXIF/GPS metadata without uploading files to any server.
 
 - Website: https://www.image-utils.site/
-- Repository: https://github.com/H-arshal/Image-Utils
+- Repository: https://github.com/zhufengwei/Image-Utils
 - License: MIT License (Open Source)
-- Privacy Architecture: 100% Client-Side WebAssembly & HTML5 Canvas. Zero network payload transfer.
+- Privacy Architecture: Images are processed locally with HTML5 Canvas and are never uploaded. Optional GA4 analytics loads only after consent and does not receive image bytes, filenames, or EXIF data.
 
 ## Available Tools
 
@@ -26,5 +26,5 @@
 
 ## Legal & Compliance
 
-- [Privacy Policy](https://www.image-utils.site/privacy): Full zero-data-retention disclosure.
-- [Terms of Service](https://www.image-utils.site/terms): Free MIT open-source terms.
+- [Privacy Policy](https://www.image-utils.site/privacy): Local image-processing and optional analytics disclosures.
+- [Terms of Service](https://www.image-utils.site/terms): Service terms and upstream MIT attribution.

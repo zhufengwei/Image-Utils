@@ -4,8 +4,8 @@
 Image Utility is a comprehensive, client-side web application providing 14 essential image manipulation and conversion tools. The application runs entirely within modern web browsers using HTML5 Canvas, the JavaScript Canvas 2D API, WebAssembly decoders, and jsPDF. Zero image data is ever uploaded, cached, or logged on remote servers.
 
 - Canonical URL: https://www.image-utils.site/
-- Production Source: https://github.com/H-arshal/Image-Utils
-- Author: Harshal Moon (https://h-arshal.github.io/Portfolio/)
+- Maintained Source: https://github.com/zhufengwei/Image-Utils
+- Upstream project and original author: https://github.com/H-arshal/Image-Utils (MIT; copyright retained in LICENSE)
 - License: MIT License
 
 ---

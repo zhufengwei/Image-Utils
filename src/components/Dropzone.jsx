@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UploadCloud } from 'lucide-react';
 import { createSampleLandscape, createSampleAvatar } from '../utils/sampleImages';
+import { getImageLimitError, MAX_IMAGE_FILE_SIZE } from '../utils/imageLimits';
 
 export default function Dropzone({ onFileLoaded }) {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -24,9 +25,6 @@ export default function Dropzone({ onFileLoaded }) {
   }, []);
 
   const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
-  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
-  const MAX_PIXEL_DIMENSION = 12000; // 12,000 px max safe dimension
-
   const handleFile = (file) => {
     if (!file) return;
 
@@ -35,7 +33,7 @@ export default function Dropzone({ onFileLoaded }) {
       return;
     }
 
-    if (file.size > MAX_FILE_SIZE) {
+    if (file.size > MAX_IMAGE_FILE_SIZE) {
       alert('File is too large. Maximum supported file size is 50 MB.');
       return;
     }
@@ -50,8 +48,9 @@ export default function Dropzone({ onFileLoaded }) {
         alert('Invalid or corrupted image data.');
       };
       img.onload = () => {
-        if (img.naturalWidth > MAX_PIXEL_DIMENSION || img.naturalHeight > MAX_PIXEL_DIMENSION) {
-          alert(`Image dimensions (${img.naturalWidth}×${img.naturalHeight}px) exceed the safe browser limit of ${MAX_PIXEL_DIMENSION}px.`);
+        const limitError = getImageLimitError(img.naturalWidth, img.naturalHeight, file.size);
+        if (limitError) {
+          alert(limitError);
           return;
         }
         onFileLoaded({
