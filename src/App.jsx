@@ -224,7 +224,7 @@ export default function App() {
     }
 
     // Dynamic Canonical URL (clean path without query strings or hash)
-    const productionOrigin = 'https://www.image-utils.site';
+    const productionOrigin = 'https://tubular-cascaron-6e081d.netlify.app';
     const cleanPath = location.pathname === '/' ? '/' : location.pathname.replace(/\/$/, '');
     const canonicalHref = `${productionOrigin}${cleanPath}`;
 
