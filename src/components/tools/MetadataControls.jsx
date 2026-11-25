@@ -30,7 +30,7 @@ export default function MetadataControls({ file, fileType, originalSize, onChang
         }
       });
     } else {
-      setMetaInfo({ hasExif: false, isSample: true });
+      setMetaInfo({ hasExif: false, inspectionSupported: true, isSample: true });
       setLoading(false);
     }
     return () => {
@@ -54,10 +54,10 @@ export default function MetadataControls({ file, fileType, originalSize, onChang
     <div className="tool-controls-flow" style={{ gap: '14px' }}>
       {/* 1. Primary Privacy Status Card */}
       <div style={{
-        background: metaInfo?.hasExif
+        background: metaInfo?.hasExif || !metaInfo?.inspectionSupported
           ? 'linear-gradient(135deg, rgba(180, 83, 9, 0.12) 0%, rgba(217, 119, 6, 0.04) 100%)'
           : 'linear-gradient(135deg, rgba(21, 128, 61, 0.12) 0%, rgba(34, 197, 94, 0.04) 100%)',
-        border: metaInfo?.hasExif
+        border: metaInfo?.hasExif || !metaInfo?.inspectionSupported
           ? '1px solid rgba(180, 83, 9, 0.3)'
           : '1px solid rgba(21, 128, 61, 0.3)',
         borderRadius: 'var(--radius-md)',
@@ -68,7 +68,7 @@ export default function MetadataControls({ file, fileType, originalSize, onChang
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {metaInfo?.hasExif ? (
+            {metaInfo?.hasExif || !metaInfo?.inspectionSupported ? (
               <ShieldAlert size={18} color="var(--color-warning)" />
             ) : (
               <ShieldCheck size={18} color="var(--color-success)" />
@@ -76,30 +76,34 @@ export default function MetadataControls({ file, fileType, originalSize, onChang
             <span style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--color-text)' }}>
               {loading
                 ? 'Inspecting Headers...'
+                : !metaInfo?.inspectionSupported
+                ? 'Limited Format Inspection'
                 : metaInfo?.hasExif
-                ? 'Sensitive Metadata Detected'
-                : 'Zero Sensitive Tags Found'}
+                ? 'EXIF Metadata Detected'
+                : 'No EXIF Data Found'}
             </span>
           </div>
 
           <span style={{
             fontSize: '0.6875rem',
             fontWeight: 700,
-            background: metaInfo?.hasExif ? 'var(--color-warning)' : 'var(--color-success)',
+            background: metaInfo?.hasExif || !metaInfo?.inspectionSupported ? 'var(--color-warning)' : 'var(--color-success)',
             color: '#fff',
             padding: '2px 8px',
             borderRadius: '999px'
           }}>
-            {metaInfo?.hasExif ? 'Purge Active' : 'Clean'}
+            {!metaInfo?.inspectionSupported ? 'Limited' : metaInfo?.hasExif ? 'Purge Active' : 'Checked'}
           </span>
         </div>
 
         <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--color-text-secondary)', lineHeight: 1.45 }}>
           {loading
             ? 'Analyzing binary EXIF markers and camera headers...'
+            : !metaInfo?.inspectionSupported
+            ? 'This format is not currently inspected for EXIF tags. Re-exporting as JPEG, PNG, or WebP will still redraw the pixels into a clean file.'
             : metaInfo?.hasExif
             ? 'Embedded device and location tags were discovered in the original file. Exporting will scrub them completely.'
-            : 'No GPS coordinates or EXIF device markers were found. Re-drawing through our pure canvas context ensures 100% anonymization.'}
+            : 'No EXIF data was found in the supported JPEG, PNG, or WebP metadata structures. Re-exporting redraws the pixels without carrying source EXIF data.'}
         </p>
 
         {metaInfo?.hasExif && (

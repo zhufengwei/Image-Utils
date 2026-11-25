@@ -1,7 +1,7 @@
 {
   "name": "Image Utils - Free In-Browser Image Utility",
   "short_name": "Image Utils",
-  "description": "Free, 100% private in-browser image tools. Resize, compress, crop, and convert formats with zero uploads.",
+  "description": "Free in-browser image tools. Resize, compress, crop, and convert images locally; optional analytics requires consent.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

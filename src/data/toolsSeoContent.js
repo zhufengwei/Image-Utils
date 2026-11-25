@@ -31,7 +31,7 @@ export const TOOLS_SEO_DATA = {
       'Aspect ratio lock preserves image proportions without stretching or distortion.',
       'One-click preset dimension scaling (25%, 50%, 75%, 100%, 200%).',
       'High-fidelity bicubic resampling computed via HTML5 Canvas 2D.',
-      '100% client-side: Zero bytes transferred across the network.'
+      'Image pixels are processed locally. Optional analytics and advertising may make separate network requests.'
     ],
     faqs: [
       {
@@ -568,10 +568,10 @@ export const TOOLS_SEO_DATA = {
     keywords: 'image utils privacy policy, zero upload editor privacy, private photo processing',
     steps: [
       { name: 'Zero Server Uploads', text: 'All operations execute locally in your browser memory.' },
-      { name: 'No Tracking Cookies', text: 'We do not sell data, profile users, or retain photos.' },
+      { name: 'Optional Analytics After Consent', text: 'Google Analytics loads only after a visitor opts in; image files are never uploaded.' },
       { name: 'Open Source Transparency', text: 'Full MIT licensed codebase publicly inspectable on GitHub.' }
     ],
-    features: ['100% local RAM execution', 'No cookies or trackers', 'Zero data retention', 'MIT License'],
+    features: ['Local image processing', 'Analytics only after consent', 'No image storage', 'MIT License'],
     faqs: [
       {
         q: 'Are any photos sent to your servers?',

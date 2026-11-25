@@ -76,12 +76,12 @@ function trackAnalyticsPageView(path) {
 
 const ROUTE_SEO = {
   home: {
-    title: 'Image Utils | Free In-Browser Image Utility & Tools (100% Private)',
-    desc: 'Image Utils is a free, 100% private in-browser image utility. Resize, compress, crop, convert formats, and remove EXIF data without uploading. Fast, local & secure.',
+    title: 'Image Utils | Free In-Browser Image Tools, No Image Uploads',
+    desc: 'Resize, compress, crop, convert, and clean image metadata with free browser-based tools. Your image files are processed locally and never uploaded.',
   },
   resize: {
     title: 'Resize Image Online | Image Utility',
-    desc: 'Resize image dimensions with aspect ratio lock or custom width and height. 100% private in-browser.',
+    desc: 'Resize image dimensions with aspect ratio lock or custom width and height. Process image files locally in your browser.',
   },
   compress: {
     title: 'Compress Image Online (Reduce KB) | Image Utility',
@@ -136,8 +136,8 @@ const ROUTE_SEO = {
     desc: 'Inspect and remove EXIF tags, GPS location coordinates, and camera device serial numbers for privacy.',
   },
   privacy: {
-    title: 'Privacy Policy | Image Utility (100% Private)',
-    desc: 'Read our zero-upload privacy policy. All image editing, resizing, compression, and conversions run 100% client-side in your browser RAM.',
+    title: 'Privacy Policy | Image Utility',
+    desc: 'Learn how local image processing, optional analytics, and Google AdSense advertising handle data on Image Utility.',
   },
   terms: {
     title: 'Terms of Service | Image Utility',
@@ -277,7 +277,7 @@ export default function App() {
       ? (ROUTE_SEO[path] || ROUTE_SEO.home)
       : {
           title: '404 - Page Not Found | Image Utility',
-          desc: 'The requested image tool or page could not be found. Explore our 13 client-side image editing tools.'
+          desc: 'The requested image tool or page could not be found. Explore our 14 client-side image editing tools.'
         };
 
     document.title = meta.title;
@@ -289,7 +289,7 @@ export default function App() {
     }
 
     // Dynamic Canonical URL (clean path without query strings or hash)
-    const productionOrigin = 'https://tubular-cascaron-6e081d.netlify.app';
+    const productionOrigin = 'https://www.image-utils.site';
     const cleanPath = location.pathname === '/' ? '/' : location.pathname.replace(/\/$/, '');
     const canonicalHref = `${productionOrigin}${cleanPath}`;
 
@@ -432,13 +432,10 @@ export default function App() {
           </div>
           <div className="footer-bottom">
             <p className="footer-copy">
-              © {new Date().getFullYear()} Image Utility by{' '}
-              <a href="https://h-arshal.github.io/Portfolio/" target="_blank" rel="noopener noreferrer">
-                Harshal Moon
-              </a>. 100% client-side. Zero data uploaded.
+              © {new Date().getFullYear()} Image Utility. Images are processed in your browser and are not uploaded.
             </p>
             <div className="footer-ext-links">
-              <a href="https://github.com/H-arshal/Image-Utils" target="_blank" rel="noopener noreferrer">GitHub</a>
+              <a href="https://github.com/zhufengwei/Image-Utils" target="_blank" rel="noopener noreferrer">GitHub &amp; Support</a>
               <span className="footer-dot">·</span>
               <Link to="/privacy">Privacy Policy</Link>
               <span className="footer-dot">·</span>

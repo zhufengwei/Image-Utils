@@ -1,22 +1,24 @@
 import React, { useRef, useState } from 'react';
+import { getImageLimitError, MAX_IMAGE_FILE_SIZE } from '../utils/imageLimits';
 
 export default function BottomDropzone({ onFileLoaded }) {
   const [isDragOver, setIsDragOver] = useState(false);
   const inputRef = useRef(null);
 
   const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp'];
-  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
-  const MAX_PIXEL_DIMENSION = 12000;
-
   const handleFile = (file) => {
     if (!file || !ALLOWED_MIME_TYPES.includes(file.type)) return;
-    if (file.size > MAX_FILE_SIZE) return;
+    if (file.size > MAX_IMAGE_FILE_SIZE) return;
 
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        if (img.naturalWidth > MAX_PIXEL_DIMENSION || img.naturalHeight > MAX_PIXEL_DIMENSION) return;
+        const limitError = getImageLimitError(img.naturalWidth, img.naturalHeight, file.size);
+        if (limitError) {
+          alert(limitError);
+          return;
+        }
         onFileLoaded({
           file,
           dataUrl: e.target.result,

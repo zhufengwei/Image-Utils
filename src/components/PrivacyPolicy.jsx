@@ -4,7 +4,7 @@ import { ShieldCheck, ArrowLeft, Lock } from 'lucide-react';
 
 export default function PrivacyPolicy({ onManageAnalytics }) {
   useEffect(() => {
-    document.title = 'Privacy Policy | Image Utility (100% Private)';
+    document.title = 'Privacy Policy | Image Utility';
     window.scrollTo(0, 0);
   }, []);
 
@@ -20,7 +20,7 @@ export default function PrivacyPolicy({ onManageAnalytics }) {
           <span>Zero Server Uploads Guaranteed</span>
         </div>
         <h1 className="legal-title">Privacy Policy</h1>
-        <p className="legal-updated">Last updated: October 23, 2026</p>
+        <p className="legal-updated">Last updated: November 25, 2026</p>
       </div>
 
       <div className="legal-content">
@@ -40,13 +40,13 @@ export default function PrivacyPolicy({ onManageAnalytics }) {
         </section>
 
         <section className="legal-section">
-          <h2>1. Data We Do Not Collect</h2>
-          <p>Unlike traditional online image converters, Image Utility has no backend processing server. We do not collect, view, or retain:</p>
+          <h2>1. Image Data and Information We Do Not Request</h2>
+          <p>Image Utility has no backend image-processing server. We do not collect, view, or retain:</p>
           <ul>
             <li><strong>Your Images:</strong> Photos, graphics, logos, or documents loaded into the app stay on your machine.</li>
             <li><strong>EXIF &amp; GPS Location Tags:</strong> Metadata embedded in your photos remains on your machine (or is scrubbed locally if you choose the Metadata tool).</li>
-            <li><strong>Personally Identifiable Information (PII):</strong> We do not ask for your name, email address, phone number, or login credentials.</li>
-            <li><strong>Uploaded Files:</strong> There is no file upload endpoint; network inspection (F12) confirms zero image payload transmissions.</li>
+            <li><strong>Account details:</strong> Image Utility does not require an account or ask for your name, email address, phone number, or login credentials.</li>
+            <li><strong>Image uploads:</strong> Image Utility has no file-upload endpoint. Image bytes, filenames, and EXIF data are not sent to our servers or included in analytics or advertising requests.</li>
           </ul>
         </section>
 
@@ -66,7 +66,7 @@ export default function PrivacyPolicy({ onManageAnalytics }) {
             Google Analytics 4 is used to understand page visits and whether image tools are being used. The Google Analytics tag is loaded only after you choose “Allow analytics.” We send page paths and simple events such as opening a tool or loading an image. Image pixels, filenames, and EXIF metadata are never included in analytics events and remain on your device.
           </p>
           <p>
-            If you allow analytics, Google may process browser and device information, referral information, and general location signals under its own policies. The site stores your analytics choice in this browser's local storage. If you reject on your first visit, the Google Analytics tag is not loaded. If you withdraw a previous choice, future events stop and the site attempts to remove Google Analytics cookies stored for this domain. You can change your choice at any time below.
+            If you allow analytics, Google may process browser and device information, referral information, and general location signals under its own policies. The site stores your analytics choice in this browser's local storage. If you reject on your first visit, the Google Analytics tag is not loaded. If you withdraw a previous choice, future events stop and the site attempts to remove Google Analytics cookies stored for this domain. You can change your analytics choice at any time below.
           </p>
           <button type="button" className="analytics-consent-reject privacy-analytics-settings" onClick={onManageAnalytics}>
             Manage analytics preferences
@@ -74,14 +74,27 @@ export default function PrivacyPolicy({ onManageAnalytics }) {
         </section>
 
         <section className="legal-section">
-          <h2>4. Image Processing and Analytics Provider</h2>
+          <h2>4. Advertising</h2>
           <p>
-            Image processing remains entirely client-side and does not send image data to Image Utility or Google Analytics. When analytics is enabled by your choice, basic usage events are sent to Google Analytics 4. For details about Google's data handling, see Google's privacy information and Google Analytics terms.
+            This site uses Google AdSense to display ads. Google and its advertising partners may use cookies or similar technologies and process browser or device information, network information, and ad interactions to deliver, measure, limit, and personalize ads. These advertising requests do not include the images you process, their filenames, or their EXIF metadata.
+          </p>
+          <p>
+            For details about Google's advertising data practices and controls, see{' '}
+            <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Google's advertising technologies and controls</a>.
+            Google requires publishers serving personalized ads in the EEA, UK, and Switzerland to use a Google-certified consent management platform integrated with the IAB Transparency and Consent Framework. See{' '}
+            <a href="https://support.google.com/adsense/answer/13554116" target="_blank" rel="noopener noreferrer">Google's publisher consent requirements</a>.
           </p>
         </section>
 
         <section className="legal-section">
-          <h2>5. Your Rights and Control</h2>
+          <h2>5. Image Processing and Analytics Provider</h2>
+          <p>
+            Image processing remains entirely client-side and does not send image data to Image Utility, Google Analytics, or Google AdSense. When analytics is enabled by your choice, basic usage events are sent to Google Analytics 4. For details about Google's data handling, see Google's privacy information and Google Analytics terms.
+          </p>
+        </section>
+
+        <section className="legal-section">
+          <h2>6. Your Rights and Control</h2>
           <p>
             Because we do not collect or store your personal data on any server, there is no personal database from which to
             request data deletion or copies-you are always in total control of your media files on your local drive.
@@ -89,16 +102,12 @@ export default function PrivacyPolicy({ onManageAnalytics }) {
         </section>
 
         <section className="legal-section">
-          <h2>6. Contact Information</h2>
+          <h2>7. Contact Information</h2>
           <p>
-            If you have questions about this Privacy Policy or our client-side architecture, contact the developer via{' '}
-            <a href="https://h-arshal.github.io/Portfolio/" target="_blank" rel="noopener noreferrer">
-              Harshal Moon's Portfolio
-            </a>{' '}
-            or view the open-source code on{' '}
-            <a href="https://github.com/H-arshal/Image-Utils" target="_blank" rel="noopener noreferrer">
-              GitHub
-            </a>.
+            For questions about this site or its privacy practices, contact the site maintainer through{' '}
+            <a href="https://github.com/zhufengwei/Image-Utils/issues" target="_blank" rel="noopener noreferrer">
+              the project's GitHub support page
+            </a>. Please do not include private images or personal data in a public issue.
           </p>
         </section>
       </div>

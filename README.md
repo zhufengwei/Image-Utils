@@ -4,7 +4,7 @@
 
 ### A lightning-fast, privacy-first image editing & conversion suite running 100% in your browser.
 
-**Zero server uploads · Zero tracking · Zero latency · 100% Client-Side Sandbox**
+**Zero image uploads · Optional analytics after consent · Local image processing**
 
 [![Live App: image-utils.site](https://img.shields.io/badge/Live_App-image--utils.site-f97316?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.image-utils.site/)
 
@@ -14,15 +14,15 @@
 [![Vite](https://img.shields.io/badge/Vite-8.3-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Privacy: 100% Client-Side](https://img.shields.io/badge/Privacy-100%25_Local_Sandbox-10b981?style=flat-square&logo=shield&logoColor=white)](#privacy--security-guarantee)
 [![Linter: Oxlint](https://img.shields.io/badge/linter-oxlint-c65d21?style=flat-square)](https://oxc.rs/)
-[![Deploy: Vercel](https://img.shields.io/badge/deploy-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://www.image-utils.site/)
-[![GitHub stars](https://img.shields.io/github/stars/h-arshal/Image-Utils?style=flat-square&color=c65d21)](https://github.com/h-arshal/Image-Utils/stargazers)
+[![Current domain DNS: Vercel](https://img.shields.io/badge/current_domain-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://www.image-utils.site/)
+[![GitHub repository](https://img.shields.io/badge/source-zhufengwei%2FImage--Utils-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/zhufengwei/Image-Utils)
 
-**[🚀 Try Image Utils Online](https://www.image-utils.site/) · [Portfolio](https://h-arshal.github.io/Portfolio/) · [GitHub](https://github.com/h-arshal) · [LinkedIn](https://www.linkedin.com/in/harshal-moon-064956174/) · [LeetCode](https://leetcode.com/u/harshal_jaipal/) · [Instagram](https://www.instagram.com/harshal.moon)**
+**[🚀 Try Image Utils Online](https://www.image-utils.site/) · [Site repository & support](https://github.com/zhufengwei/Image-Utils)**
 
 [Quick start](#quick-start) · [14 Everyday Utilities](#14-everyday-utilities) · [How It Works](#how-it-works) · [Privacy & Security](#privacy--security-guarantee) · [Supported Formats](#supported-formats) · [FAQ](#faq) · [License](#license)
 
 ```bash
-git clone https://github.com/h-arshal/Image-Utils.git && cd Image-Utils && npm install && npm run dev
+git clone https://github.com/zhufengwei/Image-Utils.git && cd Image-Utils && npm install && npm run dev
 ```
 
 </div>
@@ -41,7 +41,7 @@ Most online converters and image editors force you to upload your sensitive phot
 
 | Feature | Typical Online Converters | Image Utility |
 | :--- | :--- | :--- |
-| **Data Privacy** | Uploads photos to remote third-party servers | **100% Local in-browser sandbox (0 network bytes sent)** |
+| **Data Privacy** | Uploads photos to remote third-party servers | **Images stay in-browser; optional usage analytics requires consent** |
 | **Speed & Latency** | Network upload & download bottlenecks | **Instant real-time manipulation via HTML5 Canvas 2D** |
 | **Cost & Limits** | Subscriptions, paywalls, and daily limits | **Free, open source, no accounts, no watermarks** |
 | **Security & EXIF** | Metadata frequently retained or logged | **Built-in EXIF scrubber to protect GPS coordinates** |
@@ -102,11 +102,10 @@ flowchart LR
 
 As a project engineered by a cybersecurity researcher, Image Utility implements defense-in-depth client-side sandboxing:
 
-- **Zero Network Egress:** Your image data is never packaged into `POST` or `PUT` payloads. You can inspect your browser's Network DevTools tab to verify that zero bytes leave your machine.
-- **50 MB File Size Ceiling:** Protects client-side RAM from out-of-memory browser tab crashes on mobile devices.
-- **12,000 px Dimension Boundary:** Restricts hardware canvas allocation to safe GPU surface limits.
+- **No Image Uploads:** Image files and their pixel data are processed locally and are not sent to our servers. If you opt in, GA4 receives page and tool-use events; those events do not include image bytes, filenames, or EXIF data.
+- **Input Safety Limits:** Files are limited to 50 MB, 12 MP, and 12,000 pixels per side to reduce browser memory pressure. Actual limits can still vary by device and browser.
 - **Vector Code Sanitization:** SVG vector uploads are intentionally excluded to prevent cross-site scripting (XSS) payload injection via embedded SVG `<script>` tags.
-- **Zero Cookies & Zero Tracking:** No third-party analytics (Google Analytics, Mixpanel, Segment), no tracking beacons, and no marketing cookies.
+- **Optional Analytics:** Google Analytics loads only after consent. Rejecting analytics prevents the GA4 tag from loading; allowing it sends basic usage events to Google.
 - **Automatic Buffer Deallocation:** Closing your browser tab or clicking the logo resets all allocated Object URLs and Canvas buffers immediately.
 
 ---
@@ -168,8 +167,9 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 Image Utility builds into a static Single Page Application (SPA). It can be hosted on any static edge network:
 
-- **Vercel (Recommended):** Pre-configured with [`vercel.json`](vercel.json) for SPA client-side routing rewrites and strict security headers (`X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Permissions-Policy`).
-- **Netlify & Cloudflare Pages:** Pre-configured with [`public/_redirects`](public/_redirects) for client-side route fallback.
+- **Current public domain:** `www.image-utils.site` currently has a Vercel CNAME. Its `vercel.json` configures clean URLs, redirects, headers, and SPA fallback.
+- **Netlify deployment:** The connected Netlify project is available at `tubular-cascaron-6e081d.netlify.app` and builds the `main` branch with `npm run build` to `dist/`. The custom domain is not attached to that project.
+- **Other static hosts:** Cloudflare Pages and GitHub Pages can serve the `dist/` output with their respective SPA fallback configuration.
 - **GitHub Pages:** Serve from the `dist/` branch or configure a GitHub Actions deployment.
 
 ---
@@ -179,7 +179,7 @@ Image Utility builds into a static Single Page Application (SPA). It can be host
 <details>
 <summary><strong>Do my images ever touch an external server or AI API?</strong></summary>
 
-**No, never.** All pixel computations, filters, crops, and conversions happen directly in your browser's local memory using HTML5 Canvas. No data is ever transmitted over the network.
+Your image bytes, filenames, and EXIF data are processed locally and are not uploaded. If you opt in, GA4 receives basic page and tool-use events; see the [Privacy Policy](https://www.image-utils.site/privacy).
 </details>
 
 <details>
@@ -191,7 +191,7 @@ Image Utility builds into a static Single Page Application (SPA). It can be host
 <details>
 <summary><strong>Are there file size or upload limits?</strong></summary>
 
-To prevent your browser tab from exhausting device RAM (especially on smartphones or older laptops), file imports are capped at **50 MB** and dimensions at **12,000 px**.
+To reduce browser memory pressure, file imports are capped at **50 MB**, **12 megapixels**, and **12,000 px per side**. Limits vary by device and browser.
 </details>
 
 <details>
@@ -208,20 +208,11 @@ SVGs are XML vector code that can contain executable `<script>` tags, presenting
 
 ---
 
-## 👤 Author & Connect
+## 👤 Project Credits & Support
 
-**Harshal Moon**  
-*Software Engineer & Cybersecurity Researcher*
+Image Utility is an independently maintained deployment based on the MIT-licensed [Image-Utils project by Harshal Moon](https://github.com/H-arshal/Image-Utils). The upstream copyright and license are retained in [`LICENSE`](LICENSE).
 
-<div align="left">
-
-[![Portfolio](https://img.shields.io/badge/Portfolio-h--arshal.github.io-c65d21?style=flat-square&logo=google-chrome&logoColor=white)](https://h-arshal.github.io/Portfolio/)
-[![GitHub](https://img.shields.io/badge/GitHub-@h--arshal-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/h-arshal)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Harshal_Moon-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/harshal-moon-064956174/)
-[![LeetCode](https://img.shields.io/badge/LeetCode-harshal__jaipal-FFA116?style=flat-square&logo=leetcode&logoColor=white)](https://leetcode.com/u/harshal_jaipal/)
-[![Instagram](https://img.shields.io/badge/Instagram-@harshal.moon-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://www.instagram.com/harshal.moon)
-
-</div>
+For support or to report a bug, use [GitHub Issues](https://github.com/zhufengwei/Image-Utils/issues). Please do not post private photos or personal data in a public issue.
 
 ---
 
@@ -230,11 +221,11 @@ SVGs are XML vector code that can contain executable `<script>` tags, presenting
 Contributions, bug reports, and feature requests are very welcome!  
 Feel free to open an issue or submit a pull request:
 
-1. Fork the Project (`https://github.com/h-arshal/Image-Utils/fork`)
+1. Fork the Project (`https://github.com/zhufengwei/Image-Utils/fork`)
 2. Create your Feature Branch (`git checkout -b feature/AmazingUtility`)
 3. Commit your Changes (`git commit -m 'feat: add AmazingUtility'`)
 4. Push to the Branch (`git push origin feature/AmazingUtility`)
-5. Open a Pull Request on [GitHub Pull Requests](https://github.com/h-arshal/Image-Utils/pulls)
+5. Open a Pull Request on [GitHub Pull Requests](https://github.com/zhufengwei/Image-Utils/pulls)
 
 ---
 

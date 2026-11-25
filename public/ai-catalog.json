@@ -6,7 +6,7 @@
       "displayName": "Image Utility Agent Card",
       "type": "application/agent-card+json",
       "url": "https://www.image-utils.site/agent-card.json",
-      "description": "Agent Card declaring 13 private, in-browser image processing tools including resize, compress, crop, format conversion, and watermark.",
+      "description": "Agent Card declaring 14 in-browser image processing tools including resize, compress, crop, format conversion, and watermark.",
       "representativeQueries": [
         "resize and compress image online",
         "convert image format webp png jpg",
@@ -31,7 +31,7 @@
       "displayName": "Image Utility Comprehensive Agent Skills",
       "type": "text/markdown; profile=\"urn:air:agent-skills\"",
       "url": "https://www.image-utils.site/llms-full.txt",
-      "description": "Complete reference manual and architectural specification for all 13 client-side image editing utilities.",
+      "description": "Complete reference manual and architectural specification for all 14 client-side image editing utilities.",
       "representativeQueries": [
         "full image tools documentation",
         "complete image processing guide",

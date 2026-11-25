@@ -21,7 +21,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { TOOLS_SEO_DATA } from './src/data/toolsSeoContent.js';
 
-const ORIGIN = 'https://tubular-cascaron-6e081d.netlify.app';
+const ORIGIN = 'https://www.image-utils.site';
 
 /**
  * Generate semantic HTML for the tool guide & FAQ section

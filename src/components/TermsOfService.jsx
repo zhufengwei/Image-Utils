@@ -70,10 +70,11 @@ export default function TermsOfService() {
         <section className="legal-section">
           <h2>6. Source Code &amp; Contributions</h2>
           <p>
-            The complete source code is publicly accessible on{' '}
-            <a href="https://github.com/H-arshal/Image-Utils" target="_blank" rel="noopener noreferrer">
+            This maintained version is publicly available on{' '}
+            <a href="https://github.com/zhufengwei/Image-Utils" target="_blank" rel="noopener noreferrer">
               GitHub
-            </a>. Contributions, bug reports, and pull requests are welcomed.
+            </a>. It is based on the MIT-licensed upstream project by Harshal Moon; the original copyright and license are retained. For site support, use the{' '}
+            <a href="https://github.com/zhufengwei/Image-Utils/issues" target="_blank" rel="noopener noreferrer">project support page</a>.
           </p>
         </section>
       </div>

@@ -69,7 +69,7 @@ export default function AboutModal({ isOpen, onClose }) {
           {activeTab === 'about' && (
             <div className="about-tab-content">
               <p className="about-hero-p">
-                <strong>Image Utility</strong> is a lightweight, professional suite of 13 everyday image editing and conversion utilities that run directly inside your web browser. Zero server uploads and zero network latency. Optional analytics only loads after you consent.
+                <strong>Image Utility</strong> is a lightweight suite of 14 everyday image editing and conversion utilities that run directly inside your web browser. Images are processed locally and never uploaded. Optional analytics only loads after you consent.
               </p>
 
               <div className="about-features-grid">
@@ -153,11 +153,10 @@ export default function AboutModal({ isOpen, onClose }) {
                 <ul className="policy-checklist">
                   <li>
                     <CheckCircle2 size={15} color="var(--color-accent)" className="policy-check-icon" />
-                    <span><strong>50 MB File Size Ceiling:</strong> Prevents client-side RAM exhaustion on mobile devices.</span>
+                    <span><strong>Input Safety Limits:</strong> 50 MB, 12 megapixels, and 12,000 px per side to reduce browser memory pressure.</span>
                   </li>
                   <li>
                     <CheckCircle2 size={15} color="var(--color-accent)" className="policy-check-icon" />
-                    <span><strong>12,000 px Max Dimension:</strong> Constrained to safe hardware canvas boundaries.</span>
                   </li>
                   <li>
                     <CheckCircle2 size={15} color="var(--color-accent)" className="policy-check-icon" />
@@ -179,7 +178,7 @@ export default function AboutModal({ isOpen, onClose }) {
                   Have a suggestion or encountered a bug? Open an issue on GitHub:
                 </p>
                 <a
-                  href="https://github.com/H-arshal/Image-Utils/issues"
+                  href="https://github.com/zhufengwei/Image-Utils/issues"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="modal-github-cta"
@@ -198,18 +197,19 @@ export default function AboutModal({ isOpen, onClose }) {
               <div className="developer-profile-card">
                 <div className="developer-profile-top">
                   <div className="developer-avatar-box">
-                    <span className="developer-avatar-initial">H</span>
+                      <span className="developer-avatar-initial">H</span>
                   </div>
                   <div className="developer-profile-details">
                     <div className="developer-name-row">
                       <h4 className="developer-name">Harshal Moon</h4>
-                      <span className="developer-badge">Creator & Developer</span>
+                      <span className="developer-badge">Original Project Author</span>
                     </div>
-                    <p className="developer-title">Software Engineer & Cybersecurity Researcher</p>
+                    <p className="developer-title">Original MIT-licensed Image-Utils project</p>
                   </div>
                 </div>
                 <p className="developer-bio">
-                  Software engineer and cybersecurity researcher passionate about building high-performance, privacy-first web utilities with clean design and zero server footprint. Built <strong>Image Utility</strong> to give creators and developers an instant, reliable image manipulation toolkit that respects their data and executes entirely in their local browser sandbox.
+                  The original Image-Utils project was created by Harshal Moon. This website is an independently maintained deployment based on that MIT-licensed project. For support with this site, visit the{' '}
+                  <a href="https://github.com/zhufengwei/Image-Utils" target="_blank" rel="noopener noreferrer">Image Utility site repository</a>.
                 </p>
               </div>
 
@@ -274,14 +274,14 @@ export default function AboutModal({ isOpen, onClose }) {
                   </a>
 
                   <a
-                    href="https://github.com/H-arshal/Image-Utils"
+                  href="https://github.com/zhufengwei/Image-Utils"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="developer-action-btn"
                   >
                     <div className="developer-action-btn-left">
                       <Code2 size={15} />
-                      <span>Image-Utils GitHub Repository</span>
+                      <span>Image Utility Site Repository &amp; Support</span>
                     </div>
                     <ExternalLink size={13} />
                   </a>
