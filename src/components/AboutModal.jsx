@@ -69,7 +69,7 @@ export default function AboutModal({ isOpen, onClose }) {
           {activeTab === 'about' && (
             <div className="about-tab-content">
               <p className="about-hero-p">
-                <strong>Image Utility</strong> is a lightweight, professional suite of 13 everyday image editing and conversion utilities that run directly inside your web browser. Zero server uploads, zero network latency, and zero tracking.
+                <strong>Image Utility</strong> is a lightweight, professional suite of 13 everyday image editing and conversion utilities that run directly inside your web browser. Zero server uploads and zero network latency. Optional analytics only loads after you consent.
               </p>
 
               <div className="about-features-grid">
@@ -104,7 +104,7 @@ export default function AboutModal({ isOpen, onClose }) {
                   <div className="about-feature-text">
                     <h4>Zero Data Retention</h4>
                     <p>
-                      No database, no cookies, and no cloud caching. Closing your browser tab or navigating home immediately frees all image memory buffers.
+                      No image database or cloud caching. Optional GA4 analytics loads only after you consent; your choice is saved in this browser. Closing your browser tab or navigating home frees image memory buffers.
                     </p>
                   </div>
                 </div>
@@ -138,10 +138,10 @@ export default function AboutModal({ isOpen, onClose }) {
               <div className="policy-section-card">
                 <h4 className="policy-section-title">
                   <span className="policy-section-num">2</span>
-                  Zero Tracking, Analytics & Cookies
+                  Optional Analytics (Consent Required)
                 </h4>
                 <p className="policy-section-body">
-                  Image Utility contains no tracking cookies, analytics scripts, advertising beacons, or telemetry. Web typography is served with preconnected Google Fonts CDN links.
+                  Google Analytics 4 loads only if you choose Allow analytics. It records page views and basic tool-use events, never image pixels, filenames, or EXIF data. If you reject, the Google Analytics script is not loaded.
                 </p>
               </div>
 
