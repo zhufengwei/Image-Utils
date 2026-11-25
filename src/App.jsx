@@ -17,13 +17,14 @@ const NotFound = lazy(() => import('./components/NotFound'));
 
 const GA4_MEASUREMENT_ID = 'G-N8RYTRMPN9';
 const ANALYTICS_CONSENT_KEY = 'image-utils-analytics-consent-v1';
+let analyticsConsentForSession = null;
 
 function readAnalyticsConsent() {
   try {
     const value = window.localStorage.getItem(ANALYTICS_CONSENT_KEY);
-    return value === 'granted' || value === 'denied' ? value : null;
+    return value === 'granted' || value === 'denied' ? value : analyticsConsentForSession;
   } catch {
-    return null;
+    return analyticsConsentForSession;
   }
 }
 
@@ -32,6 +33,12 @@ function initializeAnalytics() {
   window.__imageUtilsGA4Initialized = true;
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function gtag() { window.dataLayer.push(arguments); };
+  window.gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+  });
   window.gtag('js', new Date());
   window.gtag('config', GA4_MEASUREMENT_ID, { send_page_view: false });
   const script = document.createElement('script');
@@ -44,6 +51,19 @@ function trackAnalyticsEvent(eventName, parameters = {}) {
   if (readAnalyticsConsent() !== 'granted') return;
   initializeAnalytics();
   window.gtag('event', eventName, parameters);
+}
+
+function clearGoogleAnalyticsCookies() {
+  try {
+    document.cookie.split(';').forEach((cookie) => {
+      const name = cookie.split('=')[0].trim();
+      if (name === '_ga' || name.startsWith('_ga_')) {
+        document.cookie = name + '=; Max-Age=0; path=/; SameSite=Lax';
+      }
+    });
+  } catch {
+    // Cookie access may be disabled by the browser.
+  }
 }
 
 function trackAnalyticsPageView(path) {
@@ -321,13 +341,20 @@ export default function App() {
   };
 
   const handleAnalyticsChoice = (choice) => {
+    analyticsConsentForSession = choice;
     try {
       window.localStorage.setItem(ANALYTICS_CONSENT_KEY, choice);
     } catch {
       // The preference still applies for this page view if storage is unavailable.
     }
     setAnalyticsConsentState(choice);
-    if (choice === 'granted') initializeAnalytics();
+    if (choice === 'granted') {
+      initializeAnalytics();
+      window.gtag('consent', 'update', { analytics_storage: 'granted' });
+    } else {
+      if (window.gtag) window.gtag('consent', 'update', { analytics_storage: 'denied' });
+      clearGoogleAnalyticsCookies();
+    }
     setShowAnalyticsConsent(false);
   };
 
