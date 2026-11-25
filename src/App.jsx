@@ -15,6 +15,45 @@ const PrivacyPolicy = lazy(() => import('./components/PrivacyPolicy'));
 const TermsOfService = lazy(() => import('./components/TermsOfService'));
 const NotFound = lazy(() => import('./components/NotFound'));
 
+const GA4_MEASUREMENT_ID = 'G-N8RYTRMPN9';
+const ANALYTICS_CONSENT_KEY = 'image-utils-analytics-consent-v1';
+
+function readAnalyticsConsent() {
+  try {
+    const value = window.localStorage.getItem(ANALYTICS_CONSENT_KEY);
+    return value === 'granted' || value === 'denied' ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function initializeAnalytics() {
+  if (typeof window === 'undefined' || window.__imageUtilsGA4Initialized) return;
+  window.__imageUtilsGA4Initialized = true;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = window.gtag || function gtag() { window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  window.gtag('config', GA4_MEASUREMENT_ID, { send_page_view: false });
+  const script = document.createElement('script');
+  script.async = true;
+  script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA4_MEASUREMENT_ID;
+  document.head.appendChild(script);
+}
+
+function trackAnalyticsEvent(eventName, parameters = {}) {
+  if (readAnalyticsConsent() !== 'granted') return;
+  initializeAnalytics();
+  window.gtag('event', eventName, parameters);
+}
+
+function trackAnalyticsPageView(path) {
+  trackAnalyticsEvent('page_view', {
+    page_path: path,
+    page_location: window.location.origin + path,
+    page_title: document.title,
+  });
+}
+
 const ROUTE_SEO = {
   home: {
     title: 'Image Utils | Free In-Browser Image Utility & Tools (100% Private)',
@@ -135,7 +174,10 @@ function ToolRouteWrapper({ imageData, setImageData, onShowToast }) {
         navigate('/');
       }}
       onShowToast={onShowToast}
-      onFileLoaded={(data) => setImageData(data)}
+      onFileLoaded={(data) => {
+        trackAnalyticsEvent('image_loaded', { tool_id: toolId });
+        setImageData(data);
+      }}
     />
   );
 }
@@ -170,6 +212,7 @@ function HomeRoute({ imageData, setImageData }) {
 
   const handleFileLoadedOnHome = (data) => {
     setImageData(data);
+    trackAnalyticsEvent('image_loaded', { tool_id: 'home' });
     navigate('/resize');
   };
 
@@ -201,6 +244,8 @@ export default function App() {
   const [imageData, setImageData] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [analyticsConsent, setAnalyticsConsentState] = useState(() => readAnalyticsConsent());
+  const [showAnalyticsConsent, setShowAnalyticsConsent] = useState(() => readAnalyticsConsent() === null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -258,7 +303,14 @@ export default function App() {
 
     const twDesc = document.querySelector('meta[name="twitter:description"]');
     if (twDesc) twDesc.setAttribute('content', meta.desc);
-  }, [location.pathname]);
+
+    if (analyticsConsent === 'granted') {
+      trackAnalyticsPageView(cleanPath);
+      if (path && ROUTE_SEO[path] && path !== 'home' && path !== 'privacy' && path !== 'terms') {
+        trackAnalyticsEvent('tool_open', { tool_id: path });
+      }
+    }
+  }, [location.pathname, analyticsConsent]);
 
 
   const showToast = (msg) => {
@@ -266,6 +318,17 @@ export default function App() {
     setTimeout(() => {
       setToastMessage(null);
     }, 3500);
+  };
+
+  const handleAnalyticsChoice = (choice) => {
+    try {
+      window.localStorage.setItem(ANALYTICS_CONSENT_KEY, choice);
+    } catch {
+      // The preference still applies for this page view if storage is unavailable.
+    }
+    setAnalyticsConsentState(choice);
+    if (choice === 'granted') initializeAnalytics();
+    setShowAnalyticsConsent(false);
   };
 
   const handleResetToHome = () => {
@@ -298,7 +361,7 @@ export default function App() {
                 />
               }
             />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/privacy" element={<PrivacyPolicy onManageAnalytics={() => setShowAnalyticsConsent(true)} />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route
               path="/:toolId"
@@ -357,6 +420,19 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {showAnalyticsConsent && (
+        <aside className="analytics-consent-banner" role="region" aria-label="Analytics preferences">
+          <div className="analytics-consent-copy">
+            <strong>Optional analytics</strong>
+            <p>Allow Google Analytics to measure page views and tool use. Your images, filenames, and image metadata are never sent. Analytics loads only if you agree. See our <Link to="/privacy">Privacy Policy</Link>.</p>
+          </div>
+          <div className="analytics-consent-actions">
+            <button type="button" className="analytics-consent-reject" onClick={() => handleAnalyticsChoice('denied')}>Reject</button>
+            <button type="button" className="analytics-consent-accept" onClick={() => handleAnalyticsChoice('granted')}>Allow analytics</button>
+          </div>
+        </aside>
+      )}
 
       {/* Toast Notification */}
       {toastMessage && (
