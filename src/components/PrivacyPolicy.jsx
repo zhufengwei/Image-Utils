@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, ArrowLeft, Lock } from 'lucide-react';
 
-export default function PrivacyPolicy() {
+export default function PrivacyPolicy({ onManageAnalytics }) {
   useEffect(() => {
     document.title = 'Privacy Policy | Image Utility (100% Private)';
     window.scrollTo(0, 0);
@@ -61,19 +61,22 @@ export default function PrivacyPolicy() {
         </section>
 
         <section className="legal-section">
-          <h2>3. Cookies and Tracking</h2>
+          <h2>3. Optional Analytics</h2>
           <p>
-            Image Utility is strictly cookie-free. We do not set advertising cookies, profiling cookies, or tracking beacons.
-            We do not sell user data to data brokers or advertising networks.
+            Google Analytics 4 is used to understand page visits and whether image tools are being used. The Google Analytics tag is loaded only after you choose “Allow analytics.” We send page paths and simple events such as opening a tool or loading an image. Image pixels, filenames, and EXIF metadata are never included in analytics events and remain on your device.
           </p>
+          <p>
+            If you allow analytics, Google may process browser and device information, referral information, and general location signals under its own policies. The site stores your analytics choice in this browser's local storage. If you reject on your first visit, the Google Analytics tag is not loaded. If you withdraw a previous choice, future events stop and the site attempts to remove Google Analytics cookies stored for this domain. You can change your choice at any time below.
+          </p>
+          <button type="button" className="analytics-consent-reject privacy-analytics-settings" onClick={onManageAnalytics}>
+            Manage analytics preferences
+          </button>
         </section>
 
         <section className="legal-section">
-          <h2>4. Web Performance &amp; Privacy-First Telemetry</h2>
+          <h2>4. Image Processing and Analytics Provider</h2>
           <p>
-            To monitor site reliability and Core Web Vitals, we use privacy-focused, cookieless metrics provided by our hosting
-            infrastructure (such as Vercel Speed Insights). These collect aggregated technical signals (such as page load time
-            and browser brand) without fingerprinting or tracking individual users across websites.
+            Image processing remains entirely client-side and does not send image data to Image Utility or Google Analytics. When analytics is enabled by your choice, basic usage events are sent to Google Analytics 4. For details about Google's data handling, see Google's privacy information and Google Analytics terms.
           </p>
         </section>
 
