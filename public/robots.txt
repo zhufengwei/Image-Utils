@@ -1,23 +1,26 @@
 # Robots.txt for Image Utility
-# https://www.image-utils.site/
+# https://tubular-cascaron-6e081d.netlify.app/
 # Source: https://github.com/H-arshal/Image-Utils
+
 
 User-agent: *
 Allow: /
+
 
 # Dedicated AI Answer Engine Crawlers
 User-agent: GPTBot
 Allow: /
 
+
 User-agent: PerplexityBot
 Allow: /
+
 
 User-agent: ClaudeBot
 Allow: /
 
-# Google AdSense Crawler
-User-agent: Mediapartners-Google
-Allow: /
+
 
 # Canonical XML Sitemap
-Sitemap: https://www.image-utils.site/sitemap.xml
+Sitemap: https://tubular-cascaron-6e081d.netlify.app/sitemap.xml
+
