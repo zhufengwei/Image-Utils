@@ -31,7 +31,7 @@ export const TOOLS_SEO_DATA = {
       'Aspect ratio lock preserves image proportions without stretching or distortion.',
       'One-click preset dimension scaling (25%, 50%, 75%, 100%, 200%).',
       'High-fidelity bicubic resampling computed via HTML5 Canvas 2D.',
-      '100% client-side: Zero bytes transferred across the network.'
+      'Image pixels are processed locally. Optional analytics and advertising may make separate network requests.'
     ],
     faqs: [
       {

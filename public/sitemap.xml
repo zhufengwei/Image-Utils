@@ -10,7 +10,7 @@
     <image:image>
       <image:loc>https://www.image-utils.site/logo.png</image:loc>
       <image:title>Image Utils – Free In-Browser Image Suite</image:title>
-      <image:caption>Free, 100% private in-browser image tools with zero server uploads.</image:caption>
+      <image:caption>Free in-browser image tools that process image files locally without server uploads.</image:caption>
     </image:image>
   </url>
 

@@ -37,7 +37,7 @@ export default function Header({ onReset, onOpenAbout }) {
           role="button"
           tabIndex={0}
           title="100% In-Browser & Private • Click to view Privacy Policy"
-          aria-label="100% Client-Side • Zero Data Uploaded"
+          aria-label="Images are processed locally and are never uploaded"
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
@@ -47,8 +47,8 @@ export default function Header({ onReset, onOpenAbout }) {
         >
           <span className="status-dot-green" />
           <Lock size={12} color="#065f46" className="privacy-lock-icon" />
-          <span className="privacy-pill-text-desktop">100% Client-Side • Zero Data Uploaded</span>
-          <span className="privacy-pill-text-mobile">100% Private</span>
+          <span className="privacy-pill-text-desktop">Local Image Processing • No Image Uploads</span>
+          <span className="privacy-pill-text-mobile">No Image Uploads</span>
         </div>
 
         {/* GitHub Link */}

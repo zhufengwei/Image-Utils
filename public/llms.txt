@@ -1,6 +1,6 @@
 # Image Utility
 
-> Free, 100% private in-browser image tools. Resize, compress, crop, circle crop, round corners, add borders, convert formats (PNG, JPEG, WebP, AVIF, TIFF, ICO), generate favicons, add watermarks, create PDFs, and remove EXIF/GPS metadata without uploading files to any server.
+> Free in-browser image tools. Resize, compress, crop, circle crop, round corners, add borders, convert formats (PNG, JPEG, WebP, AVIF, TIFF, ICO), generate favicons, add watermarks, create PDFs, and remove EXIF/GPS metadata without uploading image files to a server. Google Analytics is optional; Google AdSense is used for advertising.
 
 - Website: https://www.image-utils.site/
 - Repository: https://github.com/zhufengwei/Image-Utils
